@@ -67,13 +67,37 @@
           byteStream.push(0x00);
       }
 
-      function appendTireSet(byteStream, setName, pressureValues) {
+      function calcPressureValue(pressureStr) {
+        if (pressureStr.length == 0)
+          return 0xFF;
+
+        return Math.round(parseFloat(pressureStr) * 10);
+      }
+
+      function appendSetPressure(byteStream, ecuName, pressureValues) {
+        if (ecuName == "3AA907273H") {
+          byteStream.push(calcPressureValue(pressureValues.frontPartial));
+          byteStream.push(calcPressureValue(pressureValues.frontFull));
+          byteStream.push(calcPressureValue(pressureValues.frontComfort));
+          byteStream.push(calcPressureValue(pressureValues.rearPartial));
+          byteStream.push(calcPressureValue(pressureValues.rearFull));
+          byteStream.push(calcPressureValue(pressureValues.rearComfort));
+        } else {
+          byteStream.push(calcPressureValue(pressureValues.frontFull));
+          byteStream.push(calcPressureValue(pressureValues.frontPartial));
+          byteStream.push(calcPressureValue(pressureValues.frontComfort));
+          byteStream.push(calcPressureValue(pressureValues.rearFull));
+          byteStream.push(calcPressureValue(pressureValues.rearPartial));
+          byteStream.push(calcPressureValue(pressureValues.rearComfort));
+        }
+      }
+
+      function appendTireSet(byteStream, ecuName, setName, pressureValues) {
         for (var index = 0; index < 61; index++)
           byteStream.push(0x00);
         
         appendSetName(byteStream, setName);
-        Array.prototype.push.apply(byteStream, pressureValues);
-        //appendSetPressure(byteStream, );
+        appendSetPressure(byteStream, ecuName, pressureValues);
         
         for (var index = 0; index < 6; index++)
           byteStream.push(0x00);
@@ -112,23 +136,28 @@
         byteStream.push(crc & 0xFF);
       }
 
-      function generateBody(dataset, ecuType, ecuVersion) {
+      function generateBody(dataset, ecuName, ecuType, ecuVersion) {
         var byteStream = [];
 
         appendType(byteStream, ecuType);
         byteStream.push(0x00);
 
-        appendTireSet(byteStream, "205/55R16", [0x1B,0x17,0xFF,0x1E,0x17,0xFF]);
-        appendTireSet(byteStream, "225/40R18", [0x1E,0x1B,0xFF,0x20,0x1B,0xFF]);
-        appendTireSet(byteStream, "", [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]);
-        appendTireSet(byteStream, "", [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]);
-        appendTireSet(byteStream, "", [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]);
-        appendTireSet(byteStream, "", [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]);
-        appendTireSet(byteStream, "", [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]);
-        appendTireSet(byteStream, "", [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]);
-        appendTireSet(byteStream, "", [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]);
-        appendTireSet(byteStream, "", [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]);
-        appendTireSet(byteStream, "Individ.", [0x19,0x19,0xFF,0x19,0x19,0xFF]);
+        var set1 = {frontFull:"2.7", rearFull:"3.0", frontPartial:"2.3", rearPartial:"2.3", frontComfort:"", rearComfort:""};
+        var set2 = {frontFull:"3.0", rearFull:"3.2", frontPartial:"2.7", rearPartial:"2.7", frontComfort:"", rearComfort:""};
+        var set3 = {frontFull:"2.5", rearFull:"2.5", frontPartial:"2.5", rearPartial:"2.5", frontComfort:"", rearComfort:""};
+        var setEmpty = {frontFull:"", rearFull:"", frontPartial:"", rearPartial:"", frontComfort:"", rearComfort:""};
+
+        appendTireSet(byteStream, ecuName, "205/55R16", set1);
+        appendTireSet(byteStream, ecuName, "225/40R18", set2);
+        appendTireSet(byteStream, ecuName, "", setEmpty);
+        appendTireSet(byteStream, ecuName, "", setEmpty);
+        appendTireSet(byteStream, ecuName, "", setEmpty);
+        appendTireSet(byteStream, ecuName, "", setEmpty);
+        appendTireSet(byteStream, ecuName, "", setEmpty);
+        appendTireSet(byteStream, ecuName, "", setEmpty);
+        appendTireSet(byteStream, ecuName, "", setEmpty);
+        appendTireSet(byteStream, ecuName, "", setEmpty);
+        appendTireSet(byteStream, ecuName, "Individ.", set3);
 
         for (var index = 0; index < 555; index++)
           byteStream.push(0xFF);
@@ -155,13 +184,14 @@
     
         var docType = document.getElementById('docType').value;
         var ecuObj = document.getElementById('dataOffset');
-        var ecuName = ecuObj.options[ecuObj.selectedIndex].text;
-        var ecuOffset = ecuObj.options[ecuObj.selectedIndex].getAttribute('ecuOffset');
-        var ecuVersion = ecuObj.options[ecuObj.selectedIndex].getAttribute('ecuVersion');
-        var ecuType = ecuObj.options[ecuObj.selectedIndex].getAttribute('ecuType');
+        var ecuOptions = ecuObj.options[ecuObj.selectedIndex];
+        var ecuName = ecuOptions.text;
+        var ecuOffset = ecuOptions.getAttribute('ecuOffset');
+        var ecuVersion = ecuOptions.getAttribute('ecuVersion');
+        var ecuType = ecuOptions.getAttribute('ecuType');
         
 		    generateHeader(dataset, docType, ecuName, ecuOffset);
-        generateBody(dataset, ecuType, ecuVersion);
+        generateBody(dataset, ecuName, ecuType, ecuVersion);
         generateFooter(dataset, docType);
       }
 	  </script>
