@@ -201,7 +201,17 @@
 		    generateHeader(dataset, docType, ecuName, ecuOffset);
         generateBody(dataset, ecuName, ecuType, ecuVersion, tireSets);
         generateFooter(dataset, docType);
+        
+        return dataset.value;
       }
+    
+      function doGenerateDl() {
+        var content = doGenerate();
+        var uriContent = "data:application/octet-stream," + encodeURIComponent(content);
+
+        window.open(uriContent, "dataset.xml");
+      }
+
 	  </script>
   </head>
   <body>
@@ -337,6 +347,7 @@
       </label>
 	    <br> <br>
 	    <button type="button" id="generate" onclick="doGenerate();">Generate dataset</button>
+      <button type="button" id="generate" onclick="doGenerateDl();">Generate & download dataset</button>
 	    <br> <br>
 	    <textarea id="dataset" cols="50" rows="10"></textarea>
 	  </form>
