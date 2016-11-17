@@ -92,12 +92,12 @@
         }
       }
 
-      function appendTireSet(byteStream, ecuName, setName, pressureValues) {
+      function appendTireSet(byteStream, ecuName, tireSet) {
         for (var index = 0; index < 61; index++)
           byteStream.push(0x00);
         
-        appendSetName(byteStream, setName);
-        appendSetPressure(byteStream, ecuName, pressureValues);
+        appendSetName(byteStream, tireSet.name);
+        appendSetPressure(byteStream, ecuName, tireSet);
         
         for (var index = 0; index < 6; index++)
           byteStream.push(0x00);
@@ -136,28 +136,20 @@
         byteStream.push(crc & 0xFF);
       }
 
-      function generateBody(dataset, ecuName, ecuType, ecuVersion) {
+      function generateBody(dataset, ecuName, ecuType, ecuVersion, tireSets) {
         var byteStream = [];
 
         appendType(byteStream, ecuType);
         byteStream.push(0x00);
 
-        var set1 = {frontFull:"2.7", rearFull:"3.0", frontPartial:"2.3", rearPartial:"2.3", frontComfort:"", rearComfort:""};
-        var set2 = {frontFull:"3.0", rearFull:"3.2", frontPartial:"2.7", rearPartial:"2.7", frontComfort:"", rearComfort:""};
-        var set3 = {frontFull:"2.5", rearFull:"2.5", frontPartial:"2.5", rearPartial:"2.5", frontComfort:"", rearComfort:""};
-        var setEmpty = {frontFull:"", rearFull:"", frontPartial:"", rearPartial:"", frontComfort:"", rearComfort:""};
+        var setEmpty = {name:"", frontFull:"", rearFull:"", frontPartial:"", rearPartial:"", frontComfort:"", rearComfort:""};
 
-        appendTireSet(byteStream, ecuName, "205/55R16", set1);
-        appendTireSet(byteStream, ecuName, "225/40R18", set2);
-        appendTireSet(byteStream, ecuName, "", setEmpty);
-        appendTireSet(byteStream, ecuName, "", setEmpty);
-        appendTireSet(byteStream, ecuName, "", setEmpty);
-        appendTireSet(byteStream, ecuName, "", setEmpty);
-        appendTireSet(byteStream, ecuName, "", setEmpty);
-        appendTireSet(byteStream, ecuName, "", setEmpty);
-        appendTireSet(byteStream, ecuName, "", setEmpty);
-        appendTireSet(byteStream, ecuName, "", setEmpty);
-        appendTireSet(byteStream, ecuName, "Individ.", set3);
+        for (var index = 0; index < 11; index++) {
+          if (index < tireSets.length)
+            appendTireSet(byteStream, ecuName, tireSets[index]);
+          else
+            appendTireSet(byteStream, ecuName, setEmpty);
+        }
 
         for (var index = 0; index < 555; index++)
           byteStream.push(0xFF);
@@ -190,8 +182,24 @@
         var ecuVersion = ecuOptions.getAttribute('ecuVersion');
         var ecuType = ecuOptions.getAttribute('ecuType');
         
+        var tireSets = [];
+
+        for (var index = 1; index <= 11; index++) {
+          var set = {
+            name:document.getElementById("t" + index + "name").value,
+            frontFull:document.getElementById("t" + index + "pff").value,
+            rearFull:document.getElementById("t" + index + "prf").value,
+            frontPartial:document.getElementById("t" + index + "pfp").value,
+            rearPartial:document.getElementById("t" + index + "prp").value,
+            frontComfort:document.getElementById("t" + index + "pfc").value,
+            rearComfort:document.getElementById("t" + index + "prc").value
+          };
+
+          tireSets.push(set);
+        }
+        
 		    generateHeader(dataset, docType, ecuName, ecuOffset);
-        generateBody(dataset, ecuName, ecuType, ecuVersion);
+        generateBody(dataset, ecuName, ecuType, ecuVersion, tireSets);
         generateFooter(dataset, docType);
       }
 	  </script>
@@ -204,10 +212,122 @@
 		      <option ecuOffset="0x7E0800" ecuVersion="25" ecuType="22">5Q0907273B</option>
 	      </select>
 	    </label>
-	    <br>
-	    <label for="t1name">Tire #1 name:
-	      <input id="t1name" name="t1name">
+	    <br> <br>
+	    <label>Tire set #1 name:
+	      <input id="t1name" value="205/55R16">
 	    </label>
+      <br>
+      <label>Tire set #1 Pressure front (fully loaded):
+        <input id="t1pff" value="2.7">
+      </label>
+      <br>
+      <label>Tire set #1 Pressure rear (fully loaded):
+        <input id="t1prf" value="3.0">
+      </label>
+      <br>
+      <label>Tire set #1 Pressure front (partially loaded):
+        <input id="t1pfp" value="2.3">
+      </label>
+      <br>
+      <label>Tire set #1 Pressure rear (partially loaded):
+        <input id="t1prp" value="2.3">
+      </label>
+      <br>
+      <label>Tire set #1 Pressure front (comfort):
+        <input id="t1pfc">
+      </label>
+      <br>
+      <label>Tire set #1 Pressure rear (comfort):
+        <input id="t1prc">
+      </label>
+      <br> <br>
+      <label>Tire set #2 name:
+        <input id="t2name" value="225/40R18">
+      </label>
+      <br>
+      <label>Tire set #2 Pressure front (fully loaded):
+        <input id="t2pff" value="3.0">
+      </label>
+      <br>
+      <label>Tire set #2 Pressure rear (fully loaded):
+        <input id="t2prf" value="3.2">
+      </label>
+      <br>
+      <label>Tire set #2 Pressure front (partially loaded):
+        <input id="t2pfp" value="2.7">
+      </label>
+      <br>
+      <label>Tire set #2 Pressure rear (partially loaded):
+        <input id="t2prp" value="2.7">
+      </label>
+      <br>
+      <label>Tire set #2 Pressure front (comfort):
+        <input id="t2pfc">
+      </label>
+      <br>
+      <label>Tire set #2 Pressure rear (comfort):
+        <input id="t2prc">
+      </label>
+      <br> <br>
+      <script>
+        for (var index = 3; index <= 10; index++) {
+          document.write("          <label>Tire set #" + index + " name:");
+          document.write("          <input id=\"t" + index + "name\">");
+          document.write("          </label>");
+          document.write("          <br>");
+          document.write("          <label>Tire set #" + index + " Pressure front (fully loaded):");
+          document.write("          <input id=\"t" + index + "pff\">");
+          document.write("          </label>");
+          document.write("          <br>");
+          document.write("          <label>Tire set #" + index + " Pressure rear (fully loaded):");
+          document.write("          <input id=\"t" + index + "prf\">");
+          document.write("          </label>");
+          document.write("          <br>");
+          document.write("          <label>Tire set #" + index + " Pressure front (partially loaded):");
+          document.write("          <input id=\"t" + index + "pfp\">");
+          document.write("          </label>");
+          document.write("          <br>");
+          document.write("          <label>Tire set #" + index + " Pressure rear (partially loaded):");
+          document.write("          <input id=\"t" + index + "prp\">");
+          document.write("          </label>");
+          document.write("          <br>");
+          document.write("          <label>Tire set #" + index + " Pressure front (comfort):");
+          document.write("          <input id=\"t" + index + "pfc\">");
+          document.write("          </label>");
+          document.write("          <br>");
+          document.write("          <label>Tire set #" + index + " Pressure rear (comfort):");
+          document.write("          <input id=\"t" + index + "prc\">");
+          document.write("          </label>");
+          document.write("          <br> <br>");
+        }
+      </script>
+      <label>Tire set Individual name:
+        <input id="t11name" value="Individ.">
+      </label>
+      <br>
+      <label>Tire set Individual Pressure front (fully loaded):
+        <input id="t11pff" value="2.5">
+      </label>
+      <br>
+      <label>Tire set Individual Pressure rear (fully loaded):
+        <input id="t11prf" value="2.5">
+      </label>
+      <br>
+      <label>Tire set Individual Pressure front (partially loaded):
+        <input id="t11pfp" value="2.5">
+      </label>
+      <br>
+      <label>Tire set Individual Pressure rear (partially loaded):
+        <input id="t11prp" value="2.5">
+      </label>
+      <br>
+      <label>Tire set Individual Pressure front (comfort):
+        <input id="t11pfc">
+      </label>
+      <br>
+      <label>Tire set Individual Pressure rear (comfort):
+        <input id="t11prc">
+      </label>
       <br> <br>
       <label>Dataset type:
         <select id="docType" size="1">
