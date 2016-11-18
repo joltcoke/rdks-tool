@@ -1,6 +1,96 @@
 <html>
   <head>
     <title>RDKS Generator</title>
+    <style>
+      body {
+        width: 600px;
+        margin: 40px auto;
+        font-family: 'trebuchet MS', 'Lucida sans', Arial;
+        font-size: 14px;
+        color: #444;
+      }
+    
+      table {
+        *border-collapse: collapse; /* IE7 and lower */
+        border-spacing: 0;
+        width: 100%;
+      }
+      
+      .bordered {
+        border: solid #ccc 1px;
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        border-radius: 6px;
+        -webkit-box-shadow: 0 1px 1px #ccc;
+        -moz-box-shadow: 0 1px 1px #ccc;
+        box-shadow: 0 1px 1px #ccc;
+      }
+      
+      .bordered tr:hover {
+        background: #fbf8e9;
+        -o-transition: all 0.1s ease-in-out;
+        -webkit-transition: all 0.1s ease-in-out;
+        -moz-transition: all 0.1s ease-in-out;
+        -ms-transition: all 0.1s ease-in-out;
+        transition: all 0.1s ease-in-out;
+      }
+      
+      .bordered td, .bordered th {
+        border-left: 1px solid #ccc;
+        border-top: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+      }
+      
+      .bordered th {
+        background-color: #dce9f9;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
+        background-image: -webkit-linear-gradient(top, #ebf3fc, #dce9f9);
+        background-image:    -moz-linear-gradient(top, #ebf3fc, #dce9f9);
+        background-image:     -ms-linear-gradient(top, #ebf3fc, #dce9f9);
+        background-image:      -o-linear-gradient(top, #ebf3fc, #dce9f9);
+        background-image:         linear-gradient(top, #ebf3fc, #dce9f9);
+        -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+        -moz-box-shadow:0 1px 0 rgba(255,255,255,.8) inset;
+        box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+        border-top: none;
+        text-shadow: 0 1px 0 rgba(255,255,255,.5);
+      }
+      
+      .bordered td:first-child, .bordered th:first-child {
+        border-left: none;
+      }
+      
+      .bordered th:first-child {
+        -moz-border-radius: 6px 0 0 0;
+        -webkit-border-radius: 6px 0 0 0;
+        border-radius: 6px 0 0 0;
+      }
+      
+      .bordered th:last-child {
+        -moz-border-radius: 0 6px 0 0;
+        -webkit-border-radius: 0 6px 0 0;
+        border-radius: 0 6px 0 0;
+      }
+      
+      .bordered th:only-child{
+        -moz-border-radius: 6px 6px 0 0;
+        -webkit-border-radius: 6px 6px 0 0;
+        border-radius: 6px 6px 0 0;
+      }
+      
+      .bordered tr:last-child td:first-child {
+        -moz-border-radius: 0 0 0 6px;
+        -webkit-border-radius: 0 0 0 6px;
+        border-radius: 0 0 0 6px;
+      }
+      
+      .bordered tr:last-child td:last-child {
+        -moz-border-radius: 0 0 6px 0;
+        -webkit-border-radius: 0 0 6px 0;
+        border-radius: 0 0 6px 0;
+      }
+    </style>
     <script>
       function addToDataset(dataset, info) {
         dataset.value += info;
@@ -225,122 +315,59 @@
 	      </select>
 	    </label>
 	    <br> <br>
-	    <label>Tire set #1 name:
-	      <input id="t1name" value="205/55R16">
-	    </label>
-      <br>
-      <label>Tire set #1 Pressure front (fully loaded):
-        <input id="t1pff" value="2.7">
-      </label>
-      <br>
-      <label>Tire set #1 Pressure rear (fully loaded):
-        <input id="t1prf" value="3.0">
-      </label>
-      <br>
-      <label>Tire set #1 Pressure front (partially loaded):
-        <input id="t1pfp" value="2.3">
-      </label>
-      <br>
-      <label>Tire set #1 Pressure rear (partially loaded):
-        <input id="t1prp" value="2.3">
-      </label>
-      <br>
-      <label>Tire set #1 Pressure front (comfort):
-        <input id="t1pfc">
-      </label>
-      <br>
-      <label>Tire set #1 Pressure rear (comfort):
-        <input id="t1prc">
-      </label>
-      <br> <br>
-      <label>Tire set #2 name:
-        <input id="t2name" value="225/40R18">
-      </label>
-      <br>
-      <label>Tire set #2 Pressure front (fully loaded):
-        <input id="t2pff" value="3.0">
-      </label>
-      <br>
-      <label>Tire set #2 Pressure rear (fully loaded):
-        <input id="t2prf" value="3.2">
-      </label>
-      <br>
-      <label>Tire set #2 Pressure front (partially loaded):
-        <input id="t2pfp" value="2.7">
-      </label>
-      <br>
-      <label>Tire set #2 Pressure rear (partially loaded):
-        <input id="t2prp" value="2.7">
-      </label>
-      <br>
-      <label>Tire set #2 Pressure front (comfort):
-        <input id="t2pfc">
-      </label>
-      <br>
-      <label>Tire set #2 Pressure rear (comfort):
-        <input id="t2prc">
-      </label>
-      <br> <br>
       <script>
-        for (var index = 3; index <= 10; index++) {
-          document.write("          <label>Tire set #" + index + " name:");
-          document.write("          <input id=\"t" + index + "name\">");
-          document.write("          </label>");
-          document.write("          <br>");
-          document.write("          <label>Tire set #" + index + " Pressure front (fully loaded):");
-          document.write("          <input id=\"t" + index + "pff\">");
-          document.write("          </label>");
-          document.write("          <br>");
-          document.write("          <label>Tire set #" + index + " Pressure rear (fully loaded):");
-          document.write("          <input id=\"t" + index + "prf\">");
-          document.write("          </label>");
-          document.write("          <br>");
-          document.write("          <label>Tire set #" + index + " Pressure front (partially loaded):");
-          document.write("          <input id=\"t" + index + "pfp\">");
-          document.write("          </label>");
-          document.write("          <br>");
-          document.write("          <label>Tire set #" + index + " Pressure rear (partially loaded):");
-          document.write("          <input id=\"t" + index + "prp\">");
-          document.write("          </label>");
-          document.write("          <br>");
-          document.write("          <label>Tire set #" + index + " Pressure front (comfort):");
-          document.write("          <input id=\"t" + index + "pfc\">");
-          document.write("          </label>");
-          document.write("          <br>");
-          document.write("          <label>Tire set #" + index + " Pressure rear (comfort):");
-          document.write("          <input id=\"t" + index + "prc\">");
-          document.write("          </label>");
+        function generatePD(id) {
+          var html = "";
+
+          html += "<select id=\"" + id + "\" size=\"1\">";
+          html += "<option></option>";
+          
+          for (var index = 0; index < 26; index++)
+            html += "<option>" + (1.5 + 0.1 * index).toFixed(1) + "</option>";
+
+          html += "</select>";
+          
+          return html;
+        }
+
+        for (var index = 1; index <= 11; index++) {
+          document.write("          <table class=\"bordered\">");
+          document.write("            <tr>");
+
+          if (index == 11)
+            document.write("              <th colspan=\"3\">Tire set Individual</th>");
+          else
+            document.write("              <th colspan=\"3\">Tire set #" + index + "</th>");
+
+          document.write("            </tr>");
+          document.write("            <tr>");
+          document.write("              <td>Name</td>");
+          document.write("              <td colspan=\"2\"><input id=\"t" + index + "name\" style=\"width: 100%;\"></td>");
+          document.write("            </tr>");
+          document.write("            <tr>");
+          document.write("              <td bgcolor=\"#dce9f9\"><b>Situation</b></td>");
+          document.write("              <td bgcolor=\"#dce9f9\"><b>Front</b></td>");
+          document.write("              <td bgcolor=\"#dce9f9\"><b>Rear</b></td>");
+          document.write("            </tr>");
+          document.write("            <tr>");
+          document.write("              <td>Fully loaded</td>");
+          document.write("              <td>" + generatePD("t" + index + "pff") + "</td>");
+          document.write("              <td>" + generatePD("t" + index + "prf") + "</td>");
+          document.write("            </tr>");
+          document.write("            <tr>");
+          document.write("              <td>Partially loaded</td>");
+          document.write("              <td>" + generatePD("t" + index + "pfp") + "</td>");
+          document.write("              <td>" + generatePD("t" + index + "prp") + "</td>");
+          document.write("            </tr>");
+          document.write("            <tr>");
+          document.write("              <td>Comfort</td>");
+          document.write("              <td>" + generatePD("t" + index + "pfc") + "</td>");
+          document.write("              <td>" + generatePD("t" + index + "prc") + "</td>");
+          document.write("            </tr>");
+          document.write("          </table>");
           document.write("          <br> <br>");
         }
       </script>
-      <label>Tire set Individual name:
-        <input id="t11name" value="Individ.">
-      </label>
-      <br>
-      <label>Tire set Individual Pressure front (fully loaded):
-        <input id="t11pff" value="2.5">
-      </label>
-      <br>
-      <label>Tire set Individual Pressure rear (fully loaded):
-        <input id="t11prf" value="2.5">
-      </label>
-      <br>
-      <label>Tire set Individual Pressure front (partially loaded):
-        <input id="t11pfp" value="2.5">
-      </label>
-      <br>
-      <label>Tire set Individual Pressure rear (partially loaded):
-        <input id="t11prp" value="2.5">
-      </label>
-      <br>
-      <label>Tire set Individual Pressure front (comfort):
-        <input id="t11pfc">
-      </label>
-      <br>
-      <label>Tire set Individual Pressure rear (comfort):
-        <input id="t11prc">
-      </label>
-      <br> <br>
       <label>Dataset type:
         <select id="docType" size="1">
           <option value="vcp">VCP</option>
