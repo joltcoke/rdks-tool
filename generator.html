@@ -11,6 +11,7 @@
           addToDataset(dataset, "<ZDC>\n");
           addToDataset(dataset, "<IDENT>\n");
           addToDataset(dataset, "<DATEIID></DATEIID>\n");
+          addToDataset(dataset, "<VERSION-TYP></VERSION-TYP>\n");
           addToDataset(dataset, "<VERSION-INHALT></VERSION-INHALT>\n");
           addToDataset(dataset, "<LOGIN>20103</LOGIN>\n");
           addToDataset(dataset, "<ALFID>24</ALFID>\n");
@@ -28,7 +29,7 @@
           addToDataset(dataset, "<RESULT>\n");
           addToDataset(dataset, "<RESPONSE NAME=\"GetParametrizeData\" DTD=\"RepairHints\" VERSION=\"1.4.0.0\" ID=\"0\">\n");
           addToDataset(dataset, "<DATA>\n");
-          addToDataset(dataset, "<PARAMETER_DATA DIAGNOSTIC_ADDRESS=\"0x65\" START_ADDRESS=\"0x7E0800\" PR_IDX=\"0\" ZDC_NAME=\"v09600047P6\" ZDC_VERSION=\"0204\" LOGIN=\"20103\" LOGIN_IND=\"\">");
+          addToDataset(dataset, "<PARAMETER_DATA DIAGNOSTIC_ADDRESS=\"0x65\" START_ADDRESS=\"" + ecuOffset + "\" PR_IDX=\"0\" ZDC_NAME=\"v09600047P6\" ZDC_VERSION=\"0204\" LOGIN=\"20103\" LOGIN_IND=\"\">");
         } else {
           addToDataset(dataset, "\n\nERROR! Unknown docType\n\n");
         }
@@ -219,6 +220,7 @@
       <label>RDKS ECU:
   	    <select id="dataOffset" size="1">
           <option ecuOffset="0x7FC000" ecuVersion="2B" ecuType="74">3AA907273D(forum)</option>
+          <option ecuOffset="0x7E0800" ecuVersion="24" ecuType="A2">3AA907273F</option>
 		      <option ecuOffset="0x7E0800" ecuVersion="25" ecuType="22">5Q0907273B</option>
 	      </select>
 	    </label>
