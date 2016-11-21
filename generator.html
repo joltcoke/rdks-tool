@@ -109,7 +109,7 @@
           addToDataset(dataset, "</IDENT>\n");
           addToDataset(dataset, "<DATENBEREICHE>\n");
           addToDataset(dataset, "<DATENBEREICH>\n");
-          addToDataset(dataset, "<DATEN-NAME>" + ecuName + ".xml</DATEN-NAME>\n");
+          addToDataset(dataset, "<DATEN-NAME>" + ecuName + "</DATEN-NAME>\n");
           addToDataset(dataset, "<DATEN-FORMAT-NAME>DFN_HEX</DATEN-FORMAT-NAME>\n");
           addToDataset(dataset, "<START-ADR>" + ecuOffset + "</START-ADR>\n");
           addToDataset(dataset, "<GROESSE-DEKOMPRIMIERT>0x0800</GROESSE-DEKOMPRIMIERT>\n");
@@ -260,7 +260,7 @@
         dataset.value = "";
     
         var docType = document.getElementById('docType').value;
-        var ecuObj = document.getElementById('dataOffset');
+        var ecuObj = document.getElementById('ecuModel');
         var ecuOptions = ecuObj.options[ecuObj.selectedIndex];
         var ecuName = ecuOptions.text;
         var ecuOffset = ecuOptions.getAttribute('ecuOffset');
@@ -399,13 +399,76 @@
         document.getElementById("tireSetList").innerHTML = html;
         updateTireSets();
       }
-	  </script>
+
+      var configVersion = "1.0";
+
+      var configFields = [
+        "docType", "ecuModel", "numTireSets", "@enableIndividual", "@enableComfort",
+        "t1name", "t1pff", "t1prf", "t1pfp", "t1prp", "t1pfc", "t1prc",
+        "t2name", "t2pff", "t2prf", "t2pfp", "t2prp", "t2pfc", "t2prc",
+        "t3name", "t3pff", "t3prf", "t3pfp", "t3prp", "t3pfc", "t3prc",
+        "t4name", "t4pff", "t4prf", "t4pfp", "t4prp", "t4pfc", "t4prc",
+        "t5name", "t5pff", "t5prf", "t5pfp", "t5prp", "t5pfc", "t5prc",
+        "t6name", "t6pff", "t6prf", "t6pfp", "t6prp", "t6pfc", "t6prc",
+        "t7name", "t7pff", "t7prf", "t7pfp", "t7prp", "t7pfc", "t7prc",
+        "t8name", "t8pff", "t8prf", "t8pfp", "t8prp", "t8pfc", "t8prc",
+        "t9name", "t9pff", "t9prf", "t9pfp", "t9prp", "t9pfc", "t9prc",
+        "t10name", "t10pff", "t10prf", "t10pfp", "t10prp", "t10pfc", "t10prc",
+        "t11name", "t11pff", "t11prf", "t11pfp", "t11prp", "t11pfc", "t11prc"
+      ];
+
+      function loadConfig() {
+        var result = window.prompt("Load configuration\n\nPlease enter configuration code, created earlier using this tool", "");
+        
+        if (result == null)
+          return;
+        
+        var code = window.atob(result);
+        var keyValue = code.split("&");
+
+        for (var index = 0; index < keyValue.length; index++) {
+          var data = keyValue[index].split("=");
+          
+          if (data.length != 2)
+            continue;
+
+          if (data[0] == "configVersion") {
+            if (data[1] != configVersion) {
+              window.alert("Configuration was created using an incompatible version of this tool and can not be restored.\n\nCreator version: " + data[1] + "\nThis version: " + configVersion);
+              return;
+            }
+          } else if (data[0].charAt(0) == '@')
+            document.getElementById(data[0].substr(1)).checked = data[1];
+          else
+            document.getElementById(data[0]).value = data[1];
+        }
+
+        updateTireSets();
+      }
+
+      function saveConfig() {
+        var code = "configVersion=" + configVersion + "&";
+
+        for (var index = 0; index < configFields.length; index++) {
+          if (configFields[index].charAt(0) == '@')
+            code += configFields[index] + "=" + document.getElementById(configFields[index].substr(1)).checked + "&";
+          else
+            code += configFields[index] + "=" + document.getElementById(configFields[index]).value + "&";
+        }
+
+        var result = window.prompt("Save configuration\n\nPlease enter configuration code, created earlier using this tool", window.btoa(code));
+      }
+    </script>
   </head>
   <body>
     <form>
       <table class="bordered">
         <tr>
-          <th colspan="2">Settings</th>
+          <th>Settings</th>
+          <th>
+            <button type="button" onclick="loadConfig();">Load config</button>
+            <button type="button" onclick="saveConfig();">Save config</button>
+          </th>
         </tr>
         <tr>
           <td>Dataset type</td>
@@ -419,7 +482,7 @@
         <tr>
           <td>RDKS ECU</td>
           <td>
-    	      <select id="dataOffset" size="1">
+    	      <select id="ecuModel" size="1">
               <option ecuOffset="0x7E0800" ecuVersion="24" ecuType="A2">3AA907273F</option>
               <option ecuOffset="0x7E0800" ecuVersion="25" ecuType="22">5Q0907273B</option>
               <option ecuOffset="0x7FC000" ecuVersion="2B" ecuType="74">3AA907273D(forum)</option>
