@@ -418,7 +418,7 @@
       ];
 
       function loadConfig() {
-        var result = window.prompt("Load configuration\n\nPlease enter configuration code, created earlier using this tool", "");
+        var result = window.prompt("Load configuration\n\nPlease enter configuration code, created earlier with this tool.", "");
         
         if (result == null)
           return;
@@ -456,7 +456,7 @@
             code += configFields[index] + "=" + document.getElementById(configFields[index]).value + "&";
         }
 
-        var result = window.prompt("Save configuration\n\nPlease enter configuration code, created earlier using this tool", window.btoa(code));
+        var result = window.prompt("Save configuration\n\nPlease backup the configuration code below, it can be used to restore the current configuration at a later point in time.", window.btoa(code));
       }
     </script>
   </head>
