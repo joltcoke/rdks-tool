@@ -438,7 +438,7 @@
               return;
             }
           } else if (data[0].charAt(0) == '@')
-            document.getElementById(data[0].substr(1)).checked = data[1];
+            document.getElementById(data[0].substr(1)).checked = (data[1] == "true");
           else
             document.getElementById(data[0]).value = data[1];
         }
