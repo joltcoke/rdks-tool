@@ -327,7 +327,7 @@
             addToDataset(dataset, value + " ");
           }
 
-          return Uint8Array.from(byteStream);
+          return new Uint8Array(byteStream);
         } else {
    		    generateHeader(dataset, docType, ecuName, ecuOffset);
           generateBody(dataset, ecuName, ecuType, ecuVersion, tireSets);
