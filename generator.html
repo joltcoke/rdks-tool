@@ -561,13 +561,20 @@
       </table>
 	    <br> <br>
       <div id="tireSetList"></div>
+      <table class="bordered">
+        <tr>
+          <th>Dataset</th>
+        </tr>
+        <tr>
+          <td><button type="button" id="generate" onclick="doGenerate();">Generate dataset</button><button type="button" id="generate" onclick="doGenerateDl();">Generate & download dataset</button></td>
+        </tr>
+        <tr>
+          <td><textarea id="dataset" rows="25" style="width: 100%;font-family: Courier New, Courier, monospace;"></textarea></td>
+        </tr>
+      </table>
       <script>
         createTireSets();
       </script>
-	    <button type="button" id="generate" onclick="doGenerate();">Generate dataset</button>
-      <button type="button" id="generate" onclick="doGenerateDl();">Generate & download dataset</button>
-	    <br> <br>
-	    <textarea id="dataset" cols="50" rows="10"></textarea>
 	  </form>
   </body>
 </html>
