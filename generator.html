@@ -227,20 +227,26 @@
         byteStream.push(crc & 0xFF);
       }
 
-      function generateBody(dataset, ecuName, ecuType, ecuVersion, tireSets) {
+      function generateDataset(ecuName, ecuType, ecuVersion, tireSets) {
         var byteStream = [];
-
+        
         appendType(byteStream, ecuType);
         byteStream.push(0x00);
-
+        
         for (var index = 0; index < 11; index++)
-          appendTireSet(byteStream, ecuName, tireSets[index]);
-
+        appendTireSet(byteStream, ecuName, tireSets[index]);
+        
         for (var index = 0; index < 555; index++)
-          byteStream.push(0xFF);
+        byteStream.push(0xFF);
         
         appendVersion(byteStream, ecuVersion);
         appendCRC(byteStream);
+        
+        return byteStream;
+      }
+
+      function generateBody(dataset, ecuName, ecuType, ecuVersion, tireSets) {
+        var byteStream = generateDataset(ecuName, ecuType, ecuVersion, tireSets);
 
         for (var index = 0; index < byteStream.length; index++ ) {
           var str = byteStream[index].toString(16).toUpperCase();
@@ -297,18 +303,51 @@
           }
         }
         
-		    generateHeader(dataset, docType, ecuName, ecuOffset);
-        generateBody(dataset, ecuName, ecuType, ecuVersion, tireSets);
-        generateFooter(dataset, docType);
-        
-        return dataset.value;
+        if (docType == "binary") {
+          var byteStream = generateDataset(ecuName, ecuType, ecuVersion, tireSets);
+          
+          for (var index = 0; index < byteStream.length; index++) {
+            if ((index % 16) == 0) {
+              if (index > 0)
+                addToDataset(dataset, "\n");
+              
+              var offset = index.toString(16).toUpperCase();
+              
+              while (offset.length < 4)
+                offset = '0' + offset;
+
+              addToDataset(dataset, offset + " ");
+            }
+
+            var value = byteStream[index].toString(16).toUpperCase();
+
+            if (value.length < 2)
+              value = '0' + value;
+
+            addToDataset(dataset, value + " ");
+          }
+
+          return Uint8Array.from(byteStream);
+        } else {
+   		    generateHeader(dataset, docType, ecuName, ecuOffset);
+          generateBody(dataset, ecuName, ecuType, ecuVersion, tireSets);
+          generateFooter(dataset, docType);
+          
+          var byteStream = new Uint8Array(dataset.value.length);
+
+          Array.prototype.forEach.call(dataset.value, function (character, index) {
+            byteStream[index] = character.charCodeAt(0);
+          });
+
+          return byteStream;
+        }
       }
     
       function doGenerateDl() {
         var content = doGenerate();
-        var uriContent = "data:application/octet-stream," + encodeURIComponent(content);
-
-        window.open(uriContent, "dataset.xml");
+        var blob = new Blob([content], {type: "application/octet-stream"});
+        var objectUrl = URL.createObjectURL(blob);
+        window.open(objectUrl, "_blank");
       }
 
       function generatePD(id) {
@@ -476,6 +515,7 @@
             <select id="docType" size="1">
               <option value="vcp">VCP</option>
               <option value="odis">ODIS</option>
+              <option value="binary">Binary</option>
             </select>
           </td>
         </tr>
