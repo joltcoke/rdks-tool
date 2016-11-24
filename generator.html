@@ -346,8 +346,30 @@
       function doGenerateDl() {
         var content = doGenerate();
         var blob = new Blob([content], {type: "application/octet-stream"});
-        var objectUrl = URL.createObjectURL(blob);
-        window.open(objectUrl, "_blank");
+        
+        var element = window.document.createElement('a');
+        
+        if ('download' in element) {
+          var docType = document.getElementById('docType').value;
+          var ecuObj = document.getElementById('ecuModel');
+          var ecuOptions = ecuObj.options[ecuObj.selectedIndex];
+          var ecuName = ecuOptions.text;
+          var ext = (docType == "binary") ? ".bin" : ".xml";
+
+          element.href = window.URL.createObjectURL(blob);
+          element.download = ecuName + ext;
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        } else {
+          var fileReader = new FileReader();
+
+          fileReader.onload = function(event) {
+            location.href = this.result;
+          };
+
+          fileReader.readAsDataURL(blob);
+        }
       }
 
       function generatePD(id) {
